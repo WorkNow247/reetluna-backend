@@ -38,11 +38,14 @@ ${context}`;
 
     const payload = {
       model: process.env.AI_MODEL_NAME,
+      max_tokens: 1024,
       messages: [
         { role: 'system', content: aiSystemPrompt },
         ...messages
       ]
     };
+
+    console.log('Using model:', process.env.AI_MODEL_NAME);
 
     const response = await fetch(process.env.AI_API_URL, {
       method: 'POST',
@@ -57,8 +60,8 @@ ${context}`;
 
     if (!response.ok) {
         const errorText = await response.text();
-        console.error('API Error:', errorText);
-        return res.status(response.status).json({ error: 'Failed to fetch AI response' });
+        console.error(`API Error (${response.status}):`, errorText);
+        return res.status(response.status).json({ error: `AI API Error (${response.status}): ${errorText}` });
     }
 
     const data = await response.json();
